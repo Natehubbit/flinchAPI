@@ -1,20 +1,47 @@
 export interface Request {
-    title:string,
-    status:'pending' | 'success' | 'failed',
-    fulfilledAt:string,
-    celebrity:Transactor,
-    recipientName:string,
-    description:string,
-    createdAt:string,
-    cancelledAt:string,
-    modifiedAt:string,
-    charge:number,
-    requestor:Transactor,
-    occasion:string,
-    instructions:string,
-    video:Video,
-    id?:string,
+    id?: string;
+    instructions?: string;
+    recipient?: string;
+    occasion?: string;
+    requestor?: UserMeta;
+    celebrity?: UserMeta;
+    response?: RequestResponse;
+    payment?: RequestPayment;
+    status?: RequestStatus;
+    price?: number;
+    timestamp?: number;
 }
+
+export interface RequestPayment {
+    id:string;
+    amount:number;
+    payed:boolean;
+    timestamp:number;
+}
+
+export interface UserMeta {
+    id:string;
+    name:string;
+    imageUrl?:string;
+}
+
+export interface RequestResponse {
+    videoUri:string;
+    duration:number;
+    status:ResponseStatus;
+    timestamp:number;
+    thumbnailUri:string;
+}
+export interface ResponsePayload extends RequestResponse {
+    id: string;
+    celebrity: string;
+    date: string;
+    recipient: string;
+    thumbnailUri: string;
+}
+
+export type ResponseStatus = 'pending'|'rejected'|'approved'
+
 
 export interface Video {
     title:string,
@@ -33,3 +60,5 @@ export interface Review {
     text:string,
     approve:boolean,
 }
+
+export type RequestStatus = 'urgent'|'failed'|'success'|'pending'

@@ -10,7 +10,7 @@ export default class UserService {
       const data = await Users.doc(id).get()
       return data.data()
     }catch(e){
-      console.log(e)
+      console.log(e.message)
     }
     return undefined
   }

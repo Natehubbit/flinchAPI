@@ -11,8 +11,29 @@ export default class RequestService{
 
     static getRequest = async (id:string):Promise<Request|undefined> => {
         const data  = await Request.doc(id).get()
-        console.log(data)
-        return
-        // return {...data.data(), id}
+        return {...data.data(), id}
+    }
+    static async pay (
+        id:string,
+        amount:string,
+        paymentId:string,
+        ref:string,
+        currency:string
+    ):Promise<boolean> {
+        try {
+            await Request
+                .doc(id)
+                .update({
+                    'payment.amount':amount,
+                    'payment.payed':true,
+                    'payment.trxRef':ref,
+                    'payment.id':paymentId,
+                    'payment.currency':currency
+                })
+            return true
+        } catch (e) {
+            console.log(e.message)
+            return false
+        }
     }
 }
