@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import PaymentService from '../../services/paymentService';
+import PaymentService from '../../services/PaymentService';
 import _ from 'lodash'
 
 const initPaymentRoute = functions.https.onRequest(async (request, response) => {

@@ -5,10 +5,10 @@ const Users = db.collection('users');
 
 export default class UserService {
 
-  static getUser = async (id:string): Promise<FirebaseFirestore.DocumentData | undefined> => {
+  static getUser = async (id:string): Promise<User | undefined> => {
     try{
       const data = await Users.doc(id).get()
-      return data.data()
+      return {...data.data()} as User
     }catch(e){
       console.log(e.message)
     }

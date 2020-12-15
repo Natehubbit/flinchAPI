@@ -4,8 +4,10 @@ import getRequestRoute from './routes/request/getRequests';
 import initPaymentRoute from './routes/payment/initializePayment';
 import testRoute from './routes/test';
 import paymentCallbackRoute from './routes/payment/paymentCallback';
-import onCreateCelebIndex from './backgroundTasks/onCreateCelebIndex';
 import createCelebIndexRoute from './routes/createCelebIndex';
+import onCreateCelebTask from './backgroundTasks/onCreateCeleb';
+import onDeleteCelebTask from './backgroundTasks/onDeleteCeleb';
+import { onRequestPlaced } from './backgroundTasks/onRequestCreated';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -27,4 +29,15 @@ export const createCelebIndex: functions.HttpsFunction = createCelebIndexRoute
 export const onCelebCreated: functions
   .CloudFunction<functions
     .firestore
-    .QueryDocumentSnapshot> = onCreateCelebIndex
+      .QueryDocumentSnapshot> = onCreateCelebTask
+
+export const onCelebDeleted: functions
+  .CloudFunction<functions
+    .firestore
+      .QueryDocumentSnapshot> = onDeleteCelebTask
+
+export const onRequestMade: functions
+  .CloudFunction<functions
+    .Change<functions
+      .firestore
+        .QueryDocumentSnapshot>> = onRequestPlaced

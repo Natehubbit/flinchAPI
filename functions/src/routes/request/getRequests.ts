@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import RequestService from '../../services/requestService';
+import RequestService from '../../services/RequestService';
 
 
 const getRequestRoute = functions.https.onRequest(async (request, response) => {
