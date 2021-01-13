@@ -1,6 +1,5 @@
 export interface Celebrity {
-    firstName:string,
-    lastName:string,
+    alias:string,
     image:string,
     email:string,
     id?:string,

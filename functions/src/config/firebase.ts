@@ -23,3 +23,4 @@ firebaseAdmin.initializeApp({
 export const admin = firebaseAdmin
 export const db = admin.firestore()
 export const store = admin.storage()
+export const auth = admin.auth()

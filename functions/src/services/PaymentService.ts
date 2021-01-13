@@ -1,37 +1,48 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import Axios, {AxiosRequestConfig} from 'axios'
-import { PAYSTACK_KEY } from '../config/constants'
+import { PAYSTACK_API, PAYSTACK_TEST_KEY } from '../config/constants'
+import { RefundData } from '../types/payment'
 
-const INIT_URL = 'https://api.paystack.co/transaction/initialize'
+const INIT_URL = `${PAYSTACK_API}transaction/initialize`
+const REFUND_URL = `${PAYSTACK_API}refund`
+
 const CONFIG:AxiosRequestConfig = {
     headers:{
-        "Authorization": `Bearer ${PAYSTACK_KEY}`,
+        "Authorization": `Bearer ${PAYSTACK_TEST_KEY}`,
         "Content-Type": "application/json",
     },
 }
 
 export default class PaymentService {
-    static async initialize(data:Customer):Promise<InitPaymentResponse|null> {
+    static async initialize(
+        data:Customer
+    ):Promise<InitPaymentResponse|null> {
         try {
-            const res = await Axios.post(INIT_URL,data,CONFIG)
+            const res = await Axios
+                .post(
+                    INIT_URL,
+                    data,
+                    CONFIG
+                )
             return res.data.data
         } catch (error) {
             console.log(error.message)
             return null
         }
     }
-}
 
-export interface Customer {
-    amount:string;
-    email:string;
-    currency:'GHS'|'NGN'|'USD';
-    callback_url:string;
-    channels:'mobile_money'|'card';
-}
-
-export interface InitPaymentResponse {
-    authorization_url: string;
-    access_code: string;
-    reference: string;
+    static async refund (data:RefundData) :Promise<any> {
+        try {
+            const res = await Axios
+                .post(
+                    REFUND_URL,
+                    data,
+                    CONFIG
+                )
+            return res.data.data
+        } catch (e) {
+            console.log(e.message)
+            return null
+        }
+    }
 }

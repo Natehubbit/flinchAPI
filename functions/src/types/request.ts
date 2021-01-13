@@ -1,3 +1,5 @@
+import { ExpoPushToken } from "expo-server-sdk"
+
 export interface Request {
     id?: string;
     instructions?: string;
@@ -23,6 +25,7 @@ export interface UserMeta {
     id:string;
     name:string;
     imageUrl?:string;
+    token?:ExpoPushToken;
 }
 
 export interface RequestResponse {
