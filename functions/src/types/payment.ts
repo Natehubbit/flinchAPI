@@ -13,7 +13,7 @@ export interface Customer {
 }
 export interface RefundData {
   transaction: string;
-  amount:number|string;
+  amount?:number|string;
 }
 
 export interface Authorization {

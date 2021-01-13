@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import Axios, {AxiosRequestConfig} from 'axios'
 import { PAYSTACK_API, PAYSTACK_TEST_KEY } from '../config/constants'
-import { RefundData } from '../types/payment'
+import { Customer, InitPaymentResponse, RefundData, RefundResponse } from '../types/payment'
 
 const INIT_URL = `${PAYSTACK_API}transaction/initialize`
 const REFUND_URL = `${PAYSTACK_API}refund`
@@ -31,7 +31,9 @@ export default class PaymentService {
         }
     }
 
-    static async refund (data:RefundData) :Promise<any> {
+    static async refund (
+        data:RefundData
+        ) :Promise<RefundResponse|null> {
         try {
             const res = await Axios
                 .post(

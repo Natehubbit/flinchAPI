@@ -1,5 +1,7 @@
 import * as functions from 'firebase-functions'
 import NotificationService from '../../services/NotificationService'
+import PaymentService from '../../services/PaymentService'
+import RequestService from '../../services/RequestService'
 import { NotificationMessage } from '../../types/notification'
 import { Request } from '../../types/request'
 
@@ -35,6 +37,31 @@ export const onRequestRejectedTask = functions.firestore
             createdAt: Date.now()
         }]
         await NotificationService.save(msg)
+        const refunded = await PaymentService.refund({
+          transaction: request.payment?.trxRef||''
+        })
+        !!refunded && 
+        request.id &&
+          await RequestService
+            .update(request.id,{data:{
+              payment: {
+                refund: {
+                  refunded: true,
+                  id: refunded.transaction.id,
+                  trxRef: refunded.transaction.reference,
+                }
+              } as any
+            }})
+        !!refunded && await NotificationService.save([{
+          to: userToken||'',
+          title: 'Request Refunded',
+          body: `Your request to ${celeb} has been refunded.`,
+          data: {id,request},
+          read: false,
+          sent: false,
+          recipientId: request.requestor?.id||'',
+          createdAt: Date.now()
+        }])
       }
     } catch (e) {
       console.log(e.message)

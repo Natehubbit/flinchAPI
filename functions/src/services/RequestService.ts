@@ -36,4 +36,21 @@ export default class RequestService{
             return false
         }
     }
+    static async update(
+        id:string,
+        payload:Partial<{key:keyof Request,data:Partial<Request>}>
+    ):Promise<boolean|null> {
+        try {
+            const {key,data} = payload
+            key && await Request
+                .doc(id)
+                .update({
+                    [key]: data
+                })
+            return true
+        } catch (e) {
+            console.log(e.message)
+            return null
+        }
+    }
 }

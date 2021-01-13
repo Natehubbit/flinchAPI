@@ -19,6 +19,12 @@ export interface RequestPayment {
     amount:number;
     payed:boolean;
     timestamp:number;
+    trxRef:string;
+    refund:{
+        refunded: boolean;
+        id:number;
+        trxRef:string;
+    };
 }
 
 export interface UserMeta {
