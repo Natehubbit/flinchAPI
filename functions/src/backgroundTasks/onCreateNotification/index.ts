@@ -21,8 +21,10 @@ const onCreateNotificationTask = functions.firestore
         }
         console.log('sent')
       } else console.log('not sent')
+      return
     } catch (e) {
       console.log(e.message)
+      return
     }
 });
 

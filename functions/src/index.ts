@@ -2,15 +2,14 @@ import * as functions from 'firebase-functions';
 import getRequestRoute from './routes/request/getRequests';
 import initPaymentRoute from './routes/payment/initializePayment';
 import testRoute from './routes/test';
-// import { onRequestPaidTask } from './backgroundTasks/onRequestPaid';
-import { onRequestFulfilledTask } from './backgroundTasks/onRequestFulfilled';
 import deleteUserRoute from './routes/auth/deleteUser';
 import paymentCallbackRoute from './routes/payment/paymentCallback';
 import createCelebIndexRoute from './routes/createCelebIndex';
 import onCreateNotificationTask from './backgroundTasks/onCreateNotification';
-import onCreateCelebTask from './backgroundTasks/onCreateCeleb';
-import onDeleteCelebTask from './backgroundTasks/onDeleteCeleb';
-import { onRequestRejectedTask } from './backgroundTasks/onRejectedRequest';
+import onRequestRejectedTask from './backgroundTasks/onRejectedRequest';
+import onRequestFulfilledTask from './backgroundTasks/onRequestFulfilled';
+import onCreateCelebIndexTask from './backgroundTasks/onCreateCelebIndexTask';
+import onDeleteCelebIndexTask from './backgroundTasks/onDeleteCelebIndexTask';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -35,23 +34,17 @@ export const deleteUser: functions.HttpsFunction = deleteUserRoute
 export const onCreateCelebIndex: functions
   .CloudFunction<functions
     .firestore
-      .QueryDocumentSnapshot> = onCreateCelebTask
+      .QueryDocumentSnapshot> = onCreateCelebIndexTask
 
 export const onDeleteCelebIndex: functions
   .CloudFunction<functions
     .firestore
-      .QueryDocumentSnapshot> = onDeleteCelebTask
+      .QueryDocumentSnapshot> = onDeleteCelebIndexTask
 
 export const onCreateNotification: functions
   .CloudFunction<functions
     .firestore
       .QueryDocumentSnapshot> = onCreateNotificationTask
-
-// export const onRequestPaid: functions
-//   .CloudFunction<functions
-//     .Change<functions
-//       .firestore
-//         .QueryDocumentSnapshot>> = onRequestPaidTask
 
 export const onRequestFulfilled: functions
   .CloudFunction<functions

@@ -20,13 +20,14 @@ export interface RequestPayment {
     payed:boolean;
     timestamp:number;
     trxRef:string;
-    refund:{
-        refunded: boolean;
-        id:number;
-        trxRef:string;
-    };
+    refund:RefundData;
 }
 
+export interface RefundData {
+    refunded: boolean;
+    id:number;
+    trxRef:string;
+}
 export interface UserMeta {
     id:string;
     name:string;

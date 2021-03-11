@@ -38,16 +38,18 @@ export default class RequestService{
     }
     static async update(
         id:string,
-        payload:Partial<{key:keyof Request,data:Partial<Request>}>
+        payload:Partial<{key:string,data:any}>
     ):Promise<boolean|null> {
         try {
             const {key,data} = payload
-            key && await Request
+            const res = key && await Request
                 .doc(id)
                 .update({
                     [key]: data
                 })
-            return true
+            return res 
+                ? !!res.writeTime
+                : false
         } catch (e) {
             console.log(e.message)
             return null

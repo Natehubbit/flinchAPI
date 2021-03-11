@@ -5,7 +5,7 @@ import RequestService from '../../services/RequestService'
 import { NotificationMessage } from '../../types/notification'
 import { Request } from '../../types/request'
 
-export const onRequestRejectedTask = functions.firestore
+const onRequestRejectedTask = functions.firestore
   .document('requests/{id}')
   .onUpdate( async (snap,context) => {
     try {
@@ -14,17 +14,17 @@ export const onRequestRejectedTask = functions.firestore
       const prevReq: Request = snap.before.data()
       const userToken = request.requestor?.token
       const celeb = request.celebrity?.name
-      console.log('Request ', JSON.stringify(request))
-      console.log('Init Response ',JSON.stringify(request.response))
-      console.log('Prev Response ',JSON.stringify(prevReq.response))
-      const isResponse = !!prevReq.response && 
+      const isRejected = !!prevReq.response && 
         (
           prevReq.response.status === 'pending' &&
           request.response?.status === 'rejected'
         ) && 
         !!celeb
-      console.log('REJECTED:: ',isResponse)
-      if (isResponse) {
+      console.log('REJECTED:: ',isRejected)
+      if (isRejected) {
+        console.log('Request ', JSON.stringify(request))
+        console.log('Final Response ',JSON.stringify(request.response))
+        console.log('Prev Response ',JSON.stringify(prevReq.response))
         console.log('USER TOKEN:: ', userToken)
         const msg: NotificationMessage[] = [{
             to: userToken||'',
@@ -40,19 +40,22 @@ export const onRequestRejectedTask = functions.firestore
         const refunded = await PaymentService.refund({
           transaction: request.payment?.trxRef||''
         })
-        !!refunded && 
-        request.id &&
+        console.log('REFUND DATA:: ', JSON.stringify(refunded))
+        const isRefunded = !!refunded && 
+          !!id
+        console.log('REFUNDED:: ', isRefunded)
+        const res = !!refunded && !!id &&
           await RequestService
-            .update(request.id,{data:{
-              payment: {
-                refund: {
-                  refunded: true,
-                  id: refunded.transaction.id,
-                  trxRef: refunded.transaction.reference,
-                }
-              } as any
-            }})
-        !!refunded && await NotificationService.save([{
+            .update(id,{
+              key: 'payment.refund',
+              data:{
+                refunded: true,
+                id: refunded.transaction.id,
+                trxRef: refunded.transaction.reference,
+              }
+            })
+        console.log('REFUND RESPONSE:: ', JSON.stringify(res))
+        res && await NotificationService.save([{
           to: userToken||'',
           title: 'Request Refunded',
           body: `Your request to ${celeb} has been refunded.`,
@@ -63,7 +66,11 @@ export const onRequestRejectedTask = functions.firestore
           createdAt: Date.now()
         }])
       }
+      return
     } catch (e) {
       console.log(e.message)
+      return
     }
 })
+
+export default onRequestRejectedTask

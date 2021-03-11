@@ -2,8 +2,9 @@ import * as functions from 'firebase-functions'
 import AuthService from '../../services/AuthService'
 
 const deleteUserRoute = functions.https.onRequest(async (req, res): Promise<any> => {
-  res.header ('Access-Control-Allow-Origin', '*')
-  res.header ('Content-Type', 'application/json')
+  res.set ('Access-Control-Allow-Origin', '*')
+  res.set("Access-Control-Allow-Headers", "content-type");
+  res.set ('Content-Type', 'application/json')
   try {
     const {id} = req.body
     await AuthService.deleteUser(id)  

@@ -3,7 +3,7 @@ import NotificationService from '../../services/NotificationService'
 import { NotificationMessage } from '../../types/notification'
 import { Request } from '../../types/request'
 
-export const onRequestFulfilledTask = functions.firestore
+const onRequestFulfilledTask = functions.firestore
   .document('requests/{id}')
   .onUpdate( async (snap,context) => {
     try {
@@ -15,14 +15,14 @@ export const onRequestFulfilledTask = functions.firestore
       console.log('Request ', JSON.stringify(request))
       console.log('Init Response ',JSON.stringify(request.response))
       console.log('Prev Response ',JSON.stringify(prevReq.response))
-      const isResponse = !!prevReq.response && 
+      const isFulfilled = !!prevReq.response && 
         (
           prevReq.response.status === 'pending' &&
           request.response?.status === 'approved'
         ) && 
         !!celeb
-      console.log('FULLFILLED:: ',isResponse)
-      if (isResponse) {
+      console.log('FULLFILLED:: ',isFulfilled)
+      if (isFulfilled) {
         console.log('USER TOKEN:: ', userToken)
         const msg: NotificationMessage[] = [{
             to: userToken||'',
@@ -36,7 +36,11 @@ export const onRequestFulfilledTask = functions.firestore
         }]
         await NotificationService.save(msg)
       }
+      return
     } catch (e) {
       console.log(e.message)
+      return
     }
 })
+
+export default onRequestFulfilledTask
